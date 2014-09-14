@@ -1,0 +1,17 @@
+**STEP 4:**  Later data analysis requires a POSIXlt date format. This
+can be accomplished by formatting the `date` and `interval` data frame elements 
+into additional data frame elements `pdt` containing the date and time in 
+POSIXlt format and 'dow' containing the name of the 
+
+`date` is the date in **yyyy-mm-dd** format while `interval` 
+is the 5-minute time interval in **hhmm** format (without leading zeros).
+The first line of code uses `sprintf` to reformat the integer interval 
+as a 4-digit number with leading zeros. The second line of code inserts the
+**:** between the **hh** and **mm** digits. The last line of code creates the
+POSIXlt date time data element `pdt` in the data frame.
+
+```{r, results="hide"}
+stime <- sprintf("%04d",activity$interval)
+stime <- paste0(substr(stime,1,2),":",substr(stime,3,4))
+activity$pdt <- as.POSIXlt(paste(activity$date,stime))
+```

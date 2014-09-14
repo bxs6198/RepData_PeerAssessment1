@@ -1,16 +1,11 @@
----
-title: 'Reproducible Research: Peer Assessment 1'
-output:
-  html_document:
-    keep_md: yes
-  pdf_document: default
----
+# Reproducible Research: Peer Assessment 1
 
 
 ## Loading and preprocessing the data
 
 **STEP 0:**  Load all the required libraries.
-```{r libraries, results='hide'}
+
+```r
 library("markdown")
 library("knitr")
 library("ggplot2")
@@ -19,13 +14,12 @@ library("plyr")
 library("scales")
 ```
 
-```{r setoptions, echo=FALSE, results="hide"}
-opts_chunk$set(echo = TRUE)
-```
+
 
 **STEP 1:**  Define the local file names.
 
-```{r, results="hide"}
+
+```r
 zipfile <- "./activity.zip"
 datafile <- "./activity.csv"
 ```
@@ -33,7 +27,8 @@ datafile <- "./activity.csv"
 **STEP 2:**  Check to see whether the .csv file exists, if not then extract the
 .csv file from `activity.zip`.
 
-```{r, results="hide"}
+
+```r
 if (!file.exists(datafile)) {
     unzip(zipfile,
           overwrite=TRUE)
@@ -46,7 +41,8 @@ data frame *activity*. The file contains three data elements: *steps*,
 `colClasses=c("integer","character","integer")`.  The 
 `na.strings="NA"` argument is set to indicate the **NA** value for the data.
 
-```{r, results="hide"}
+
+```r
 activity <- read.csv(datafile,
                      colClasses=c("integer","character","integer"),
                      na.strings="NA")
@@ -56,7 +52,8 @@ activity <- read.csv(datafile,
 time interval value in the data frame. This requires some string manipulation
 to convert *interval* from an integer value into a **hh:mm** character string.
 
-```{r}
+
+```r
 stime <- sprintf("%04d",activity$interval)
 stime <- paste0(substr(stime,1,2),":",substr(stime,3,4))
 activity$timeInterval <- as.POSIXlt(paste(activity$date,stime))
@@ -64,8 +61,17 @@ activity$timeInterval <- as.POSIXlt(paste(activity$date,stime))
 
 **STEP 5:** The resulting data frame has the following structure.
 
-```{r}
+
+```r
 str(activity)
+```
+
+```
+## 'data.frame':	17568 obs. of  4 variables:
+##  $ steps       : int  NA NA NA NA NA NA NA NA NA NA ...
+##  $ date        : chr  "2012-10-01" "2012-10-01" "2012-10-01" "2012-10-01" ...
+##  $ interval    : int  0 5 10 15 20 25 30 35 40 45 ...
+##  $ timeInterval: POSIXlt, format: "2012-10-01 00:00:00" "2012-10-01 00:05:00" ...
 ```
 
 
@@ -78,7 +84,8 @@ generating the histogram.  This is accomplished by use of `na.omit(activity)`
 in `ggplot`.  The **mean** is displayed by a dashed red line and the
 **median** by a dashed blue line.
 
-```{r}
+
+```r
 g <- ggplot(na.omit(activity), aes(x=steps)) + 
      geom_histogram(origin=0, binwidth=30, 
                     color="black", fill="seagreen", alpha=.2) + 
@@ -100,12 +107,34 @@ g <- ggplot(na.omit(activity), aes(x=steps)) +
 print(g)
 ```
 
+![plot of chunk unnamed-chunk-6](./PA1_template_files/figure-html/unnamed-chunk-6.png) 
+
 The **mean** and **median** total number of steps taken each day are as follows.
 
-```{r}
+
+```r
 mean(activity$steps,na.rm=TRUE)
+```
+
+```
+## [1] 37.38
+```
+
+```r
 median(activity$steps,na.rm=TRUE)
+```
+
+```
+## [1] 0
+```
+
+```r
 summary(activity$steps)
+```
+
+```
+##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
+##     0.0     0.0     0.0    37.4    12.0   806.0    2304
 ```
 
 As can be seen from the histogram, the vast majority of *steps* values are near
@@ -122,7 +151,8 @@ Using a subset of the *activity* data frame, we first `melt` and then `dcast`
 the interval and average steps into a tidy dataset.  **NA** values are removed 
 during the process.
 
-```{r,results="hide"}
+
+```r
 subA <- activity[,c(1,3)]
 meltA <- melt(subA, id.vars=c("interval"), measure.vars=c("steps"), na.rm=TRUE)
 tidyA <- dcast(meltA, interval ~ variable, mean)
@@ -133,7 +163,8 @@ the x-axis. The same approach that was taken previously will work with one
 difference.  Since the date value is not displayed in the plot, any date can be 
 used to create the POSIX date and time value.
 
-```{r,results="hide"}
+
+```r
 stime <- sprintf("%04d",tidyA$interval)
 stime <- paste0(substr(stime,1,2),":",substr(stime,3,4))
 tidyA$timeInterval <- as.POSIXlt(paste("2014-09-14",stime))
@@ -141,7 +172,8 @@ tidyA$timeInterval <- as.POSIXlt(paste("2014-09-14",stime))
 
 The time series graph for average daily activity is shown below.
 
-```{r}
+
+```r
 g <- ggplot(tidyA, aes(x=timeInterval,y=steps)) +
      geom_line() +
      geom_area(fill="seagreen",alpha=.2) +
@@ -156,11 +188,19 @@ g <- ggplot(tidyA, aes(x=timeInterval,y=steps)) +
 print(g)
 ```
 
+![plot of chunk unnamed-chunk-10](./PA1_template_files/figure-html/unnamed-chunk-10.png) 
+
 The 5-minute interval containing, on average across all the days in the dataset,
 the maximum number of steps is shown below.
 
-```{r}
+
+```r
 subset(tidyA, steps==max(tidyA$steps))
+```
+
+```
+##     interval steps        timeInterval
+## 104      835 206.2 2014-09-14 08:35:00
 ```
 
 
@@ -182,27 +222,42 @@ imputing the missing values.
 One quick way to determine the extent of the missing data within the dataset
 is to count up the total number of **NA** values across the entire dataset.
 
-```{r}
+
+```r
 colSums(is.na(activity))
+```
+
+```
+##        steps         date     interval timeInterval 
+##         2304            0            0            0
+```
+
+```r
 length(activity$steps)
 ```
 
+```
+## [1] 17568
+```
+
 The **NA** values are limited to the *steps* data element and as can be seen, 
-the total number of **NA** values is `r sum(is.na(activity$steps))` out of 
-`r length(activity$steps)` rows (or more simply
-`r (sum(is.na(activity$steps)) / length(activity$steps)) * 100`% of the data).
+the total number of **NA** values is 2304 out of 
+17568 rows (or more simply
+13.1148% of the data).
 
 The following R code will replace the **NA** values with the average steps for 
 that time interval.  The first step is to pre-allocate a new vector for the
 imputed values in order to preserve the original data values.
 
-```{r,results="hide"}
+
+```r
 activity$imputedSteps <- activity$steps
 ```
 
 If the value is **NA** then replace it with mean for that 5-minute interval.
 
-```{r}
+
+```r
 for (i in 1:length(activity$imputedSteps)) {
     if (is.na(activity$imputedSteps[i])) {
         intervalMean <- tidyA$steps[tidyA$interval==activity$interval[i]]
@@ -214,7 +269,8 @@ for (i in 1:length(activity$imputedSteps)) {
 Generating the new histogram with the **mean** displayed by a dashed red line
 and the **median** by a dashed blue line we get the following graph.
 
-```{r}
+
+```r
 g <- ggplot(activity, aes(x=imputedSteps)) + 
      geom_histogram(origin=0, binwidth=30, 
                     color="black", fill="seagreen", alpha=.2) + 
@@ -236,12 +292,34 @@ g <- ggplot(activity, aes(x=imputedSteps)) +
 print(g)
 ```
 
+![plot of chunk unnamed-chunk-15](./PA1_template_files/figure-html/unnamed-chunk-15.png) 
+
 Along with the new **mean** and **median** values.
 
-```{r}
+
+```r
 mean(activity$imputedSteps)
+```
+
+```
+## [1] 37.38
+```
+
+```r
 median(activity$imputedSteps)
+```
+
+```
+## [1] 0
+```
+
+```r
 summary(activity$imputedSteps)
+```
+
+```
+##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##     0.0     0.0     0.0    37.4    27.0   806.0
 ```
 
 Based on the results, the **mean** and **median** remain the same with only an
@@ -254,7 +332,8 @@ To answer this question a new factor variable is created in the dataset with
 two levels - *Weekday* and *Weekend* - to indicate whether a given date is a
 weekday or weekend.  This can easily be accomplished with the following R code.
 
-```{r,results="hide"}
+
+```r
 activity$wday <- as.factor(activity$timeInterval$wday)
 levels(activity$wday) <- c("Weekend",rep("Weekday",5),"Weekend")
 ```
@@ -262,7 +341,8 @@ levels(activity$wday) <- c("Weekend",rep("Weekday",5),"Weekend")
 We then once again take a subset of the activity dataset in order to `melt`
 and `dcast` the data for the time series graph.
 
-```{r,results="hide"}
+
+```r
 subA <- activity[,c(3,5,6)]
 meltA <- melt(subA, id.vars=c("wday","interval"), measure.vars=c("imputedSteps"), na.rm=TRUE)
 tidyA <- dcast(meltA, wday + interval ~ variable, mean)
@@ -273,7 +353,8 @@ the x-axis. The same approach that was taken previously will work with one
 difference.  Since the date value is not displayed in the plot, any date can be 
 used to create the POSIX date and time value.
 
-```{r,results="hide"}
+
+```r
 stime <- sprintf("%04d",tidyA$interval)
 stime <- paste0(substr(stime,1,2),":",substr(stime,3,4))
 tidyA$timeInterval <- as.POSIXlt(paste("2014-09-14",stime))
@@ -282,7 +363,8 @@ tidyA$timeInterval <- as.POSIXlt(paste("2014-09-14",stime))
 The time series graph for average daily activity by weekday and weekend
 is shown below.
 
-```{r}
+
+```r
 g <- ggplot(tidyA, aes(x=timeInterval,y=imputedSteps)) +
      geom_line() +
      geom_area(fill="seagreen",alpha=.2) +
@@ -299,6 +381,8 @@ g <- ggplot(tidyA, aes(x=timeInterval,y=imputedSteps)) +
            legend.position="none")
 print(g)
 ```
+
+![plot of chunk unnamed-chunk-20](./PA1_template_files/figure-html/unnamed-chunk-20.png) 
 
 Based on the graphs, a few observations can be made about differences in 
 activity patterns between weekdays and weekends.
