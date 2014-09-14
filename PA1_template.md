@@ -283,7 +283,7 @@ g <- ggplot(activity, aes(x=imputedSteps)) +
                 color="blue",
                 linetype="dashed",
                 size=1) +
-     labs(title="Histogram of Steps Across All Days",
+     labs(title="Histogram of Steps Across All Days (Imputed)",
           x="Total Steps",
           y="Count") +
      theme(title=element_text(face="bold",size=rel(1.25)),
