@@ -78,7 +78,7 @@ generating the histogram.  This is accomplished by use of `na.omit(activity)`
 in `ggplot`.  The **mean** is displayed by a dashed red line and the
 **median** by a dashed blue line.
 
-```{r}
+```{r graph1}
 g <- ggplot(na.omit(activity), aes(x=steps)) + 
      geom_histogram(origin=0, binwidth=30, 
                     color="black", fill="seagreen", alpha=.2) + 
@@ -141,7 +141,7 @@ tidyA$timeInterval <- as.POSIXlt(paste("2014-09-14",stime))
 
 The time series graph for average daily activity is shown below.
 
-```{r}
+```{r graph2}
 g <- ggplot(tidyA, aes(x=timeInterval,y=steps)) +
      geom_line() +
      geom_area(fill="seagreen",alpha=.2) +
@@ -214,7 +214,7 @@ for (i in 1:length(activity$imputedSteps)) {
 Generating the new histogram with the **mean** displayed by a dashed red line
 and the **median** by a dashed blue line we get the following graph.
 
-```{r}
+```{r graph3}
 g <- ggplot(activity, aes(x=imputedSteps)) + 
      geom_histogram(origin=0, binwidth=30, 
                     color="black", fill="seagreen", alpha=.2) + 
@@ -282,7 +282,7 @@ tidyA$timeInterval <- as.POSIXlt(paste("2014-09-14",stime))
 The time series graph for average daily activity by weekday and weekend
 is shown below.
 
-```{r}
+```{r graph4}
 g <- ggplot(tidyA, aes(x=timeInterval,y=imputedSteps)) +
      geom_line() +
      geom_area(fill="seagreen",alpha=.2) +

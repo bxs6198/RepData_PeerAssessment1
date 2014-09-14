@@ -1,10 +1,4 @@
----
-title: 'Reproducible Research: Peer Assessment 1'
-output:
-  html_document:
-    keep_md: yes
-  pdf_document: default
----
+# Reproducible Research: Peer Assessment 1
 
 
 ## Loading and preprocessing the data
@@ -113,7 +107,7 @@ g <- ggplot(na.omit(activity), aes(x=steps)) +
 print(g)
 ```
 
-![plot of chunk unnamed-chunk-6](figure/unnamed-chunk-6.png) 
+![plot of chunk graph1](./PA1_template_files/figure-html/graph1.png) 
 
 The **mean** and **median** total number of steps taken each day are as follows.
 
@@ -194,7 +188,7 @@ g <- ggplot(tidyA, aes(x=timeInterval,y=steps)) +
 print(g)
 ```
 
-![plot of chunk unnamed-chunk-10](figure/unnamed-chunk-10.png) 
+![plot of chunk graph2](./PA1_template_files/figure-html/graph2.png) 
 
 The 5-minute interval containing, on average across all the days in the dataset,
 the maximum number of steps is shown below.
@@ -298,7 +292,7 @@ g <- ggplot(activity, aes(x=imputedSteps)) +
 print(g)
 ```
 
-![plot of chunk unnamed-chunk-15](figure/unnamed-chunk-15.png) 
+![plot of chunk graph3](./PA1_template_files/figure-html/graph3.png) 
 
 Along with the new **mean** and **median** values.
 
@@ -388,7 +382,7 @@ g <- ggplot(tidyA, aes(x=timeInterval,y=imputedSteps)) +
 print(g)
 ```
 
-![plot of chunk unnamed-chunk-20](figure/unnamed-chunk-20.png) 
+![plot of chunk graph4](./PA1_template_files/figure-html/graph4.png) 
 
 Based on the graphs, a few observations can be made about differences in 
 activity patterns between weekdays and weekends.
